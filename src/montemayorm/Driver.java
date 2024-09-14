@@ -23,9 +23,10 @@ public class Driver {
     private static final int MIN_DICE = 2;
     public static void main(String[] args) {
         getInput();
-        createDice(inputs[0], inputs[1], inputs[2]);
+        createDice(inputs[0], inputs[1]);
         rollDice();
         System.out.println(findMax());
+        report();
     }
 
     /**
@@ -62,7 +63,7 @@ public class Driver {
         }
     }
 
-    private static void createDice(int numDice, int diceSides, int rolls) {
+    private static void createDice(int numDice, int diceSides) {
         dieArray = new Die[numDice];
         try {
             for (int i = 0; i < numDice; i++) {
@@ -99,5 +100,13 @@ public class Driver {
             }
         }
         return max;
+    }
+
+    public static void report(){
+        int aVal = findMax()/10;
+        for(int i: freq) {
+            int numStars = i / aVal;
+            System.out.printf("%-8d %s%n", i, "*".repeat(numStars));
+        }
     }
 }
