@@ -3,7 +3,7 @@
  * Lab 2 - Exceptions
  * Main Driver class
  * Name: Michael Seanluc Montemayor
- * Last Updated: 9/11/2024
+ * Last Updated: 9/16/2024
  */
 package montemayorm;
 
@@ -15,7 +15,7 @@ import java.util.Scanner;
  */
 public class Driver {
 
-    private static Scanner sc = new Scanner(System.in);
+    private static Scanner scanner = new Scanner(System.in);
     private static int[] inputs = new int[3];
     private static Die[] dieArray;
     private static int[] freq;
@@ -25,7 +25,6 @@ public class Driver {
         getInput();
         createDice(inputs[0], inputs[1]);
         rollDice();
-        System.out.println(findMax());
         report();
     }
 
@@ -37,17 +36,17 @@ public class Driver {
             System.out.println("Please enter the number of dice to roll, how many sides the dice have,\n" +
                     "and how many rolls to complete, separating the values by a space.");
             try {
-                String in = sc.nextLine();
-                String[] str = in.split(" ");
+                String userInput = scanner.nextLine();
+                String[] splitInput = userInput.split(" ");
 
                 // checks input length matches requirement
-                if(str.length != 3){
+                if(splitInput.length != 3){
                     throw new IOException();
                 }
 
                 //matches user input array to integer input array
                 for(int i = 0; i < 3; i++){
-                    inputs[i] = Integer.parseInt(str[i]);
+                    inputs[i] = Integer.parseInt(splitInput[i]);
                 }
 
                 // check if num dice valid
@@ -63,6 +62,11 @@ public class Driver {
         }
     }
 
+    /**
+     * Creates an array of dice based off of the user input
+     * @param numDice
+     * @param diceSides
+     */
     private static void createDice(int numDice, int diceSides) {
         dieArray = new Die[numDice];
         try {
@@ -74,10 +78,13 @@ public class Driver {
         }
     }
 
+    /**
+     * rolls the dice in the array and stores them in a frequency array
+     */
     private static void rollDice(){
         /* takes the number of sides and multiplies it by the number of dice to
-       get the max possible roll then subtracts number of dice to account for the minimum roll */
-        freq = new int[(inputs[0]*inputs[1]) - (inputs[0]-1)];
+       get the max possible roll minus one then subtracts number of dice to account for the minimum roll */
+        freq = new int[(inputs[0]*inputs[1]) - 1 - inputs[0]];
         for(int i = 0; i < inputs[2]; i++) {
             int total = 0;
             for (Die d : dieArray) {
@@ -88,10 +95,15 @@ public class Driver {
                     System.out.println("die was not rolled prior to accessing value");
                 }
             }
-            freq[total-2]++;
+            // subtracts the number of dice to place minimum roll at 0 index
+            freq[total-inputs[0]]++;
         }
     }
 
+    /**
+     * finds the highest rolled sum of dice from thr rolldice frequency array
+     * @return an int containing the highest rolled sum
+     */
     private static int findMax(){
         int max = 0;
         for(int i: freq){
@@ -102,10 +114,13 @@ public class Driver {
         return max;
     }
 
+    /**
+     * nicely prints out the results of the frequency array
+     */
     public static void report(){
-        int aVal = findMax()/10;
+        int starVal = findMax()/10;
         for(int i: freq) {
-            int numStars = i / aVal;
+            int numStars = i / starVal;
             System.out.printf("%-8d %s%n", i, "*".repeat(numStars));
         }
     }
